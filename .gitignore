@@ -1,0 +1,12 @@
+*.RProj
+*.Rproj
+*.rproj
+..R*
+gitHeadInfo.gin
+R/.Rapp.history
+*.DS_*
+.Rproj.user
+.Rhistory
+qmethod.Rproj
+~*
+*.tar.gz
