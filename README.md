@@ -1,5 +1,7 @@
 # circtools
-
+  
+![CI](https://github.com/ATpoint/circtools/actions/workflows/tests.yml/badge.svg)
+  
 A little package with functions related to the analysis of circadian / circular data in R. 
 Note that it is mainly intended for my own work, but others are free to use it if you find it useful.
 
