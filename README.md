@@ -19,7 +19,8 @@ It scales efficiently to almost any realistic number of samples and observations
 - `circular_intersect()` intersects a timepoint with a time window respecting periodicity of data  
 - `make_data()` simulates circadian data based on a cosinor model with adjustable mesor, amplitude and acrophase  
 - `make_design()` creates a design matrix based on the cosinor model for a provided set of timepoints  
-- `rad2period()` converts acrophase values from radians hours to period hours  
+- `rad2period()` converts acrophase values from radians hours to period hours
+- `run_model_selection()` classifies circadian data from two conditions into differential categories using a model fitting approach, adopted from the `compareRhythms` package
 
 ## Installation
 
