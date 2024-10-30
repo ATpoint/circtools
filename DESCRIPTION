@@ -1,15 +1,15 @@
 Package: circtools
 Title: Functions related to analysis of circular data in R
-Version: 0.0.9
-Description: Functions related to analysis of circular data in R.
-Author: Alexander Bender [cut,cre]
+Version: 0.1.0
+Description: Functions related to analysis of circular and circadian data in R.
+Author: Alexander Bender [aut,cre]
 Maintainer: Alexander Bender <atpoint90@gmail.com>
 License: LGPL (>=2)
 Encoding: UTF-8
 Imports: 
-  limma, stats, methods
+  methods, limma, stats
 Suggests:
-  ggplot2
+  ggplot2, testthat
 URL: https://github.com/atpoint/circtools
 BugReports: https://github.com/atpoint/circtools/issues
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.2

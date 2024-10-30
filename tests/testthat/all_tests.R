@@ -69,3 +69,33 @@ test_that("circular_intersect works", {
   expect_error(circular_intersect(1, c(-1, 2)))
   expect_error(circular_intersect(1, c(1, 1)))
 })
+
+test_that("run_model_selection works", {
+  y <- rbind(
+    # amplitude change
+    make_data(time = seq(1, 21, 4), amplitude = 2),
+    make_data(time = seq(1, 21, 4), amplitude = 1),
+    # acrophase change
+    make_data(time = seq(1, 21, 4), acrophase = 1),
+    make_data(time = seq(1, 21, 4), acrophase = 13),
+    # same rhythmicity
+    make_data(time = seq(1, 21, 4), acrophase = 1),
+    make_data(time = seq(1, 21, 4), acrophase = 1),
+    # loss of rhythmicity
+    make_data(time = seq(1, 21, 4), amplitude = 1),
+    make_data(time = seq(1, 21, 4), amplitude = 0),
+    # gain of rhythmicity
+    make_data(time = seq(1, 21, 4), amplitude = 0),
+    make_data(time = seq(1, 21, 4), amplitude = 1)
+  )
+  x <- matrix(y$value, byrow = TRUE, ncol = 12)
+  rownames(x) <- paste0("gene_", 1:nrow(x))
+  time <- y$time[1:12]
+  condition <- rep(c("A", "B"), each = 6)
+  r <- run_model_selection(x = x, condition = condition, time = time)
+  expect_true(is(r, "data.frame"))
+  expect_error(run_model_selection(x = x, condition = condition, time = time[1:2]))
+  expect_error(run_model_selection(x = x, condition = condition[1:2], time = time))
+  expect_error(run_model_selection(x = x, condition = condition, time = time, period = -1))
+  expect_error(run_model_selection(x = x, condition = condition, time = time, sample_weights = FALSE))
+})
