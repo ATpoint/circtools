@@ -10,8 +10,7 @@ run_model_selection(
   time,
   period = 24,
   criterion = c("BIC", "AIC"),
-  sample_weights = NULL,
-  add_arrhy = FALSE
+  sample_weights = NULL
 )
 }
 \arguments{
@@ -63,5 +62,5 @@ x <- matrix(y$value, byrow = TRUE, ncol = 12)
 rownames(x) <- paste0("gene_", 1:nrow(x))
 time <- y$time[1:12]
 condition <- rep(c("A", "B"), each = 6)
-run_model_selection(x = x, condition = condition, time = time, add_arrhy = TRUE)
+run_model_selection(x = x, condition = condition, time = time)
 }

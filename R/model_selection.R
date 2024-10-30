@@ -44,11 +44,11 @@
 #' rownames(x) <- paste0("gene_", 1:nrow(x))
 #' time <- y$time[1:12]
 #' condition <- rep(c("A", "B"), each = 6)
-#' run_model_selection(x = x, condition = condition, time = time, add_arrhy = TRUE)
+#' run_model_selection(x = x, condition = condition, time = time)
 #' @export
 run_model_selection <- function(x, condition, time, period = 24,
                                 criterion = c("BIC", "AIC"),
-                                sample_weights = NULL, add_arrhy = FALSE) {
+                                sample_weights = NULL) {
   # Checks
   if (!ncol(x) == length(condition) | !ncol(x) == length(time)) {
     stop("condition and time must have length as ncol(x)")
