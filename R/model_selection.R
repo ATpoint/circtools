@@ -62,14 +62,6 @@ run_model_selection <- function(x, condition, time, period = 24,
 
   criterion <- match.arg(criterion, choices = c("BIC", "AIC"))
 
-  if (!is.logical(sample_weights)) {
-    stop("sample_weights must be TRUE/FALSE")
-  }
-
-  if (!is.numeric(cutoff) | cutoff < 0) {
-    stop("cutoff must be numeric and >= 0")
-  }
-
   if (!is.numeric(period) | period < 0) {
     stop("cutoff must be numeric and >= 0")
   }
