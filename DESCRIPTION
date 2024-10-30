@@ -1,6 +1,6 @@
 Package: circtools
 Title: Functions related to analysis of circular data in R
-Version: 0.1.0
+Version: 0.1.1
 Description: Functions related to analysis of circular and circadian data in R.
 Author: Alexander Bender [aut,cre]
 Maintainer: Alexander Bender <atpoint90@gmail.com>

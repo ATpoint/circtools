@@ -326,15 +326,3 @@ circular_intersect <- function(query, window) {
 
   return(x)
 }
-
-#' Check if an object is a Summarized- or SingleCellExperiment and that it contains a certain assay
-#' @importFrom SummarizedExperiment assayNames
-#' @keywords internal
-#'
-check_sce <- function(x, assay) {
-  l <- list()
-  l$is_sce <- is(x, "SingleCellExperiment") | is(x, "SummarizedExperiment")
-  l$assay <- assay %in% assayNames(x)
-  l$dim <- ncol(x) > 0 & nrow(x) > 0
-  if (all(unlist(l))) TRUE else FALSE
-}
