@@ -21,9 +21,9 @@ is earlier than y.
 }
 \examples{
 # result is +2 because on a circular clock x is 2h ahead of y
-circular_distance(x=1, y=23, period=24)
+circular_distance(x = 1, y = 23, period = 24)
 
 # result is -5 because on a circular clock x is 5h behind y
-circular_distance(x=15, y=20, period=24)
+circular_distance(x = 15, y = 20, period = 24)
 
 }

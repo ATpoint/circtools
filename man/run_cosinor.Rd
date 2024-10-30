@@ -22,13 +22,13 @@ The function detects periodic rhythmicity based on the cosinor model as describe
 \url{https://bioconductor.org/packages/release/workflows/vignettes/RNAseq123/inst/doc/designmatrices.html#cyclical-models}
 For this it uses the limma framework to first fit per-observation cosinor models with \code{limma::lmFit()} and then
 obtains moderated pvalues and FDRs with \code{limma::eBayes()}. It also returns estimates for mesor, amplitude and acrophase
-based on the model coefficients. The function assumes that input data are "ready-to-use",  meaning that normalization, prefiltering (if applicable) appropriate 
+based on the model coefficients. The function assumes that input data are "ready-to-use",  meaning that normalization, prefiltering (if applicable) appropriate
 for this type of data has been done.
 }
 \details{
 Since the input data `x` (see argument description) can be both a numeric matrix or an `EList`, the user has a great flexibility over the analysis:
 For an ordinary limma analysis (default settings) `x` could be a numeric matrix with data normalized and on log2 scale.
-For a limma-trend analysis (\code{eBayes_args=list(trend=TRUE)}) `x` could be a numeric matrix of logCPMs from an RNA-seq experiment. 
+For a limma-trend analysis (\code{eBayes_args=list(trend=TRUE)}) `x` could be a numeric matrix of logCPMs from an RNA-seq experiment.
 For a limma-voom analysis `x` could be the output of \code{limma::voom()}.
 Since limma automatically uses **weights** if provided in the EList as x$weights, one can put them there in case weighted regression is desired.
 Weights could be estimated using \code{limma::arrayWeights} based on the cosinor model. A `model.matrix()` for the cosinor model can be obtained with \code{make_design()}.

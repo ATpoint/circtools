@@ -4,17 +4,17 @@
 #' \url{https://bioconductor.org/packages/release/workflows/vignettes/RNAseq123/inst/doc/designmatrices.html#cyclical-models}
 #' For this it uses the limma framework to first fit per-observation cosinor models with \code{limma::lmFit()} and then
 #' obtains moderated pvalues and FDRs with \code{limma::eBayes()}. It also returns estimates for mesor, amplitude and acrophase
-#' based on the model coefficients. The function assumes that input data are "ready-to-use",  meaning that normalization, prefiltering (if applicable) appropriate 
-#' for this type of data has been done. 
+#' based on the model coefficients. The function assumes that input data are "ready-to-use",  meaning that normalization, prefiltering (if applicable) appropriate
+#' for this type of data has been done.
 #'
 #' Since the input data `x` (see argument description) can be both a numeric matrix or an `EList`, the user has a great flexibility over the analysis:
 #' For an ordinary limma analysis (default settings) `x` could be a numeric matrix with data normalized and on log2 scale.
-#' For a limma-trend analysis (\code{eBayes_args=list(trend=TRUE)}) `x` could be a numeric matrix of logCPMs from an RNA-seq experiment. 
+#' For a limma-trend analysis (\code{eBayes_args=list(trend=TRUE)}) `x` could be a numeric matrix of logCPMs from an RNA-seq experiment.
 #' For a limma-voom analysis `x` could be the output of \code{limma::voom()}.
 #' Since limma automatically uses **weights** if provided in the EList as x$weights, one can put them there in case weighted regression is desired.
 #' Weights could be estimated using \code{limma::arrayWeights} based on the cosinor model. A `model.matrix()` for the cosinor model can be obtained with \code{make_design()}.
-#' Alternatively, `x` could be the output of \code{limma::voomWithQualityWeights()}. 
-#' 
+#' Alternatively, `x` could be the output of \code{limma::voomWithQualityWeights()}.
+#'
 #'
 #' @param x A numeric matrix or data.frame with observations in rows and samples in columns. Alternatively, an \code{EList} object.
 #' @param time A numeric vector with the time information for each column of x.
@@ -157,7 +157,7 @@ make_design <- function(time, period = 24) {
 }
 
 #' Calculate densities of periodic values such as acrophases between user-defined start and end points, respecting the circular nature of the data.
-#' 
+#'
 #' Density calculation is prone to skewed density estimates at the start and end of the data range if the method is not aware of the circular nature of the data.
 #' For that this function appends the data to itself at the front and rear end, and then uses \code{stats::density} with a default bandwidth of 0.5 to calculate densities
 #' that can be used for histogram/ridge-like plots. The user should provide a start point `from` representing the smallest possible value of the periodoc values, and an end point
@@ -236,13 +236,13 @@ rad2period <- function(x, period = 24) {
 #'
 #' @param x,y The two values to calculate circular distance for.
 #' @param period THe period of the time series
-#' 
+#'
 #' @examples
 #' # result is +2 because on a circular clock x is 2h ahead of y
-#' circular_distance(x=1, y=23, period=24)
-#' 
+#' circular_distance(x = 1, y = 23, period = 24)
+#'
 #' # result is -5 because on a circular clock x is 5h behind y
-#' circular_distance(x=15, y=20, period=24)
+#' circular_distance(x = 15, y = 20, period = 24)
 #'
 #' @export
 #'
@@ -325,4 +325,16 @@ circular_intersect <- function(query, window) {
   }
 
   return(x)
+}
+
+#' Check if an object is a Summarized- or SingleCellExperiment and that it contains a certain assay
+#' @importFrom SummarizedExperiment assayNames
+#' @keywords internal
+#'
+check_sce <- function(x, assay) {
+  l <- list()
+  l$is_sce <- is(x, "SingleCellExperiment") | is(x, "SummarizedExperiment")
+  l$assay <- assay %in% assayNames(x)
+  l$dim <- ncol(x) > 0 & nrow(x) > 0
+  if (all(unlist(l))) TRUE else FALSE
 }
