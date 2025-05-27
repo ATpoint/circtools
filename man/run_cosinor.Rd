@@ -4,7 +4,14 @@
 \alias{run_cosinor}
 \title{Detection of rhythmicity using limma with a cosinor model.}
 \usage{
-run_cosinor(x, time, period = 24, lmFit_args = list(), eBayes_args = list())
+run_cosinor(
+  x,
+  time,
+  period = 24,
+  lmFit_args = list(),
+  eBayes_args = list(),
+  batch = NULL
+)
 }
 \arguments{
 \item{x}{A numeric matrix or data.frame with observations in rows and samples in columns. Alternatively, an \code{EList} object.}
@@ -16,6 +23,8 @@ run_cosinor(x, time, period = 24, lmFit_args = list(), eBayes_args = list())
 \item{lmFit_args}{A list with arguments for \code{limma::lmFit()}.}
 
 \item{eBayes_args}{A list with arguments for \code{limma::eBayes()}.}
+
+\item{batch}{Character or factor vector with batch information, parallel to the time vector.}
 }
 \description{
 The function detects periodic rhythmicity based on the cosinor model as described in the limma design matrix guide:
@@ -46,13 +55,23 @@ x <- matrix(unlist(y), byrow = TRUE, ncol = length(time))
 rownames(x) <- paste0("acrophase_", acrophases)
 run_cosinor(x = x, time = time)
 
-# x is an EList
-xe <- new("EList", list(E = x))
-run_cosinor(x = xe, time = time)
+# Using weights to downweight a constant outlier
+x2 <- x
+x2[,5] <- x2[,5] + 10
+weights = rep(1, ncol(x2))
+weights[5] <- .01
+plot(time, x2[1,], pch = 20)
+run_cosinor(x = x2, time = time)
+run_cosinor(x = x2, time = time, lmFit_args = list(weights = weights))
 
-# x is an EList with weights
-set.seed(1)
-xew <- new("EList", list(E = x, weights = rnorm(ncol(x), 1)))
-run_cosinor(x = xew, time = time)
+# Adjusting for baselevel differences between batches
+x2 <- cbind(x, x + 5)
+time2 <- c(time, time)
+batch <- rep(c("a", "b"), each = ncol(x))
+plot(time2, x2[1,], pch = 20, col = ifelse(batch=="a", "red", "blue")) 
+# No correction, will give high pvalues despite each batch is perfectly rhythmic
+run_cosinor(x = x2, time = time2)
+# Including batch into the model adjusts for the baseline differences
+run_cosinor(x = x2, time = time2, batch = batch)
 
 }

@@ -4,7 +4,7 @@
 \alias{make_design}
 \title{Make a design matrix using a cosinor model.}
 \usage{
-make_design(time, period = 24)
+make_design(time, batch = NULL, period = 24)
 }
 \arguments{
 \item{time}{A numeric vector with timepoints}

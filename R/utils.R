@@ -21,6 +21,7 @@
 #' @param period The numeric period of the rhythmicity, default 24.
 #' @param lmFit_args A list with arguments for \code{limma::lmFit()}.
 #' @param eBayes_args A list with arguments for \code{limma::eBayes()}.
+#' @param batch Character or factor vector with batch information, parallel to the time vector.
 #'
 #' @examples
 #' period <- 24
@@ -34,21 +35,31 @@
 #' rownames(x) <- paste0("acrophase_", acrophases)
 #' run_cosinor(x = x, time = time)
 #'
-#' # x is an EList
-#' xe <- new("EList", list(E = x))
-#' run_cosinor(x = xe, time = time)
-#'
-#' # x is an EList with weights
-#' set.seed(1)
-#' xew <- new("EList", list(E = x, weights = rnorm(ncol(x), 1)))
-#' run_cosinor(x = xew, time = time)
+#' # Using weights to downweight a constant outlier
+#' x2 <- x
+#' x2[,5] <- x2[,5] + 10
+#' weights = rep(1, ncol(x2))
+#' weights[5] <- .01
+#' plot(time, x2[1,], pch = 20)
+#' run_cosinor(x = x2, time = time)
+#' run_cosinor(x = x2, time = time, lmFit_args = list(weights = weights))
+#' 
+#' # Adjusting for baselevel differences between batches
+#' x2 <- cbind(x, x + 5)
+#' time2 <- c(time, time)
+#' batch <- rep(c("a", "b"), each = ncol(x))
+#' plot(time2, x2[1,], pch = 20, col = ifelse(batch=="a", "red", "blue")) 
+#' # No correction, will give high pvalues despite each batch is perfectly rhythmic
+#' run_cosinor(x = x2, time = time2)
+#' # Including batch into the model adjusts for the baseline differences
+#' run_cosinor(x = x2, time = time2, batch = batch)
 #'
 #' @importFrom limma lmFit eBayes topTable
 #' @importFrom methods is new
 #'
 #' @export
 #'
-run_cosinor <- function(x, time, period = 24, lmFit_args = list(), eBayes_args = list()) {
+run_cosinor <- function(x, time, period = 24, lmFit_args = list(), eBayes_args = list(), batch = NULL) {
   is_class <- is(x, "EList") | is(x, "data.frame") | is(x, "matrix")
   if (!is_class) stop("x must either be a numeric matrix or data.frame, or a limma EList")
 
@@ -86,7 +97,7 @@ run_cosinor <- function(x, time, period = 24, lmFit_args = list(), eBayes_args =
   if (!is.list(eBayes_args)) stop("eBayes_args must be a list")
 
   # Fit cosinor model and extract stats
-  design <- make_design(time = time, period = period)
+  design <- make_design(time = time, period = period, batch = batch)
   fit <- do.call(lmFit, c(list(x, design = design), lmFit_args))
   fit <- do.call(eBayes, c(list(fit), eBayes_args))
   coef_pos <- grep("^sinphase$|^cosphase$", colnames(fit$coefficients))
@@ -140,9 +151,10 @@ make_data <- function(time, amplitude = 1, acrophase = 1, period = 24, mesor = 0
 #' @param period The period of the time series
 #'
 #' @importFrom stats model.matrix
+#' @importFrom limma is.fullrank
 #' @export
 #'
-make_design <- function(time, period = 24) {
+make_design <- function(time, batch = NULL, period = 24) {
   if (!is.numeric(time)) stop("time must be numeric")
   if (!is.numeric(period) | period < 0) stop("period must be numeric and positive")
 
@@ -150,8 +162,17 @@ make_design <- function(time, period = 24) {
     sinphase = sin(2 * pi * time / period),
     cosphase = cos(2 * pi * time / period)
   )
-
-  design <- model.matrix(~ sinphase + cosphase, d)
+  
+  if(!is.null(batch)){
+    if(length(batch) != length(time)) stop("batch must have same length as time")
+    d$batch <- factor(batch)
+    design <- model.matrix(~ sinphase + cosphase + batch, d)
+  } else {
+    design <- model.matrix(~ sinphase + cosphase, d)
+  }
+  
+  ifr <- limma::is.fullrank(design)
+  if(!ifr) stop("design is not full rank")
 
   return(design)
 }
