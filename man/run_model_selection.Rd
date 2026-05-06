@@ -10,7 +10,8 @@ run_model_selection(
   time,
   period = 24,
   criterion = c("BIC", "AIC"),
-  sample_weights = NULL
+  sample_weights = NULL,
+  use_categories = c("gain", "loss", "change", "same")
 )
 }
 \arguments{
@@ -30,7 +31,7 @@ run_model_selection(
 The function accepts a observation by sample matrix with circadian data and then uses a model fitting approach
 inspired and adopted from the \url{https://github.com/bharathananth/compareRhythms} package, to classify each gene
 into a category and calculate a probability score. The categories are "change", "gain", "loss", and "same",
-and the probability describes whether the best model is significantly #' better than the 2nd-best model.
+and the probability describes whether the best model is significantly better than the 2nd-best model.
 The compareRhythms authors suggest a cutoff of 0.6 and higher to "trust" the classification.
 }
 \details{

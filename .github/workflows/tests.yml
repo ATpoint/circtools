@@ -24,7 +24,7 @@ jobs:
       - name: devtools-check-docker
         run: |
           bioc_install='BiocManager::install(c("limma", "ggplot2"))'
-          dev_check='devtools::check("/circtools/")'
+          dev_check='devtools::check("/circtools/", error_on = "error")'
           dev_doc='devtools::document("/circtools/")'
           testthat='testthat::test_file("/circtools/tests/testthat/all_tests.R")'
-          docker run -v "$(pwd)":"/circtools/" bioconductor/bioconductor_docker:RELEASE_3_18 Rscript --vanilla -e "${bioc_install}; ${dev_check}; ${dev_doc}; ${testthat}"
+          docker run -v "$(pwd)":"/circtools/" bioconductor/bioconductor_docker:RELEASE_3_22 Rscript --vanilla -e "${bioc_install}; ${dev_check}; ${dev_doc}; ${testthat}"
